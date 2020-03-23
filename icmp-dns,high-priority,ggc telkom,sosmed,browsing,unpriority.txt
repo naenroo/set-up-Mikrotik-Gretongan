@@ -1,0 +1,318 @@
+*ether1 = sumber internet *
+
+
+/ip firewall address-list
+add list="private-lokal" address=0.0.0.0/8
+add list="private-lokal" address=10.0.0.0/8
+add list="private-lokal" address=100.64.0.0/10
+add list="private-lokal" address=127.0.0.0/8
+add list="private-lokal" address=169.254.0.0/16
+add list="private-lokal" address=172.16.0.0/12
+add list="private-lokal" address=192.0.0.0/24
+add list="private-lokal" address=192.0.2.0/24
+add list="private-lokal" address=192.168.0.0/16
+add list="private-lokal" address=198.18.0.0/15
+add list="private-lokal" address=198.51.100.0/24
+add list="private-lokal" address=203.0.113.0/24
+add list="private-lokal" address=224.0.0.0/3
+
+
+/ip firewall raw
+add action=drop chain=prerouting dst-port=53,5353 protocol=tcp src-address-list=!private-lokal
+add action=drop chain=prerouting dst-port=53,5353 protocol=udp src-address-list=!private-lokal
+add action=drop chain=prerouting dst-port=443 protocol=udp
+add action=drop chain=prerouting protocol=tcp src-address-list=!private-lokal src-port=135-139,445
+add action=drop chain=prerouting dst-address-list=!private-lokal dst-port=135-139,445 protocol=tcp
+add action=drop chain=prerouting protocol=udp src-address-list=!private-lokal src-port=135-139,445
+add action=drop chain=prerouting dst-address-list=!private-lokal dst-port=135-139,445 protocol=udp
+
+
+
+/ip firewall filter
+add action=accept chain=input comment="defconf: accept ICMP" protocol=icmp
+add action=accept chain=input comment="defconf: accept ICMP" dst-port=8291 protocol=tcp
+add action=accept chain=input comment="defconf: accept ICMP" dst-port=8291 protocol=udp
+add action=accept chain=input comment="defconf: accept established,related" connection-state=established,related
+add action=drop chain=input comment="defconf: drop all from WAN" in-interface=ether1
+add action=accept chain=forward comment="defconf: accept established,related" connection-state=established,related
+add action=drop chain=forward comment="defconf: drop invalid" connection-state=invalid
+add action=drop chain=forward comment="defconf:  drop all from WAN not DSTNATed" connection-nat-state=!dstnat connection-state=new in-interface=ether1
+
+
+
+/ip firewall layer7-protocol
+add name=torrent1 regexp="^.+(Torrent|torrent)"
+add name=torrent2 regexp="^(bittorrent protocol|azver1\$|get /scrape\\\\\?info_hash=)|d1:ad2:id20:|87P\\)[RP]"
+add name=torrent3 regexp="^(\\x13bittorrent protocol|azver\\x01\$|get /scrape\\\?info_hash=get /announce\\\?info_hash=|get /client/bitcomet/|GET /data\\\?fid=)|d1:ad2:id20:|\\x08'7P\\)[RP]"
+add name=torrent4 regexp="^.*(get|GET).+(torrent|thepiratebay|isohunt|entertane|demonoid|btjunkie|mininova|flixflux|torrentz|vertor|h33t|btscene|bitunity|bittoxic|thunderbytes|entertane|zoozle|vcdq|bitnova|bitsoup|meganova|fulldls|btbot|flixflux|seedpeer|fenopy|gpirate|commonbits).*\$"
+
+
+/ip firewall address-list
+add list=sosmed address=31.13.24.0/21	comment="Facebook Ireland"
+add list=sosmed address=31.13.64.0/18	comment="Facebook Ireland"
+add list=sosmed address=31.13.64.0/19	comment="Facebook Ireland"
+add list=sosmed address=31.13.64.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.65.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.66.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.67.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.68.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.69.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.70.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.71.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.72.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.73.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.74.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.75.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.76.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.78.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.80.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.81.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.82.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.83.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.84.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.85.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.86.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.87.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.90.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.91.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.92.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.94.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.95.0/24	comment="Facebook Ireland"
+add list=sosmed address=31.13.96.0/19	comment="Facebook Ireland"
+add list=sosmed address=45.64.40.0/22	comment="Facebook Singapore Pte Ltd. Singapore"
+add list=sosmed address=66.220.144.0/20	comment="Facebook, Inc. United States"
+add list=sosmed address=66.220.144.0/21	comment="Facebook, Inc. United States"
+add list=sosmed address=66.220.152.0/21	comment="Facebook, Inc. United States"
+add list=sosmed address=69.63.176.0/20	comment="Facebook, Inc. United States"
+add list=sosmed address=69.63.176.0/21	comment="Facebook, Inc. United States"
+add list=sosmed address=69.63.184.0/21	comment="Facebook, Inc. United States"
+add list=sosmed address=69.171.224.0/19	comment="Facebook, Inc. United States"
+add list=sosmed address=69.171.224.0/20	comment="Facebook, Inc. United States"
+add list=sosmed address=69.171.239.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=69.171.240.0/20	comment="Facebook, Inc. United States"
+add list=sosmed address=69.171.255.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=74.119.76.0/22	comment="Facebook, Inc. United States"
+add list=sosmed address=103.4.96.0/22	comment=" Temasek Avenue Singapore"
+add list=sosmed address=157.240.0.0/17	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.1.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.2.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.3.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.6.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.7.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.8.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.9.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.10.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.11.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.12.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.13.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.14.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.15.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.16.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.18.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.20.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.21.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=157.240.22.0/24	comment="Facebook, Inc. United States"
+add list=sosmed address=173.252.64.0/19	comment="Facebook, Inc. United States"
+add list=sosmed address=173.252.88.0/21	comment="Facebook, Inc. United States"
+add list=sosmed address=173.252.96.0/19	comment="Facebook, Inc. United States"
+add list=sosmed address=179.60.192.0/22	comment="Edge Network Services Ltd United States"
+add list=sosmed address=179.60.192.0/24	comment="Edge Network Services Ltd United States"
+add list=sosmed address=179.60.193.0/24	comment="Edge Network Services Ltd United States"
+add list=sosmed address=179.60.195.0/24	comment="Edge Network Services Ltd United States"
+add list=sosmed address=185.60.216.0/22	comment="Facebook Ireland"
+add list=sosmed address=185.60.216.0/24	comment="Facebook Ireland"
+add list=sosmed address=185.60.218.0/24	comment="Facebook Ireland"
+add list=sosmed address=185.60.219.0/24	comment="Facebook Ireland"
+add list=sosmed address=204.15.20.0/22	comment="Facebook, Inc. United States"
+add list=sosmed address=”web.whatsapp.com”	comment="whatsapp”
+add list=sosmed address=”whatsapp.com”	comment="whatsapp”
+add list=sosmed address=”whatsapp.net”	comment="whatsapp”
+
+
+/ip firewall address-list
+add list=sosmed address=64.63.0.0/18	comment="MoPub, Inc. United States"
+add list=sosmed address=69.195.160.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.162.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.163.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.164.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.165.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.166.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.168.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.169.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.171.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.172.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.173.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.175.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.176.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.177.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.178.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.179.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.180.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.181.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.182.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.184.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.185.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.186.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.187.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.188.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.189.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.190.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=69.195.191.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=103.252.112.0/23	comment="60 Robinson Road, #11-02 BEA Building, Singapore 068892. Singapore"
+add list=sosmed address=103.252.114.0/23	comment="60 Robinson Road, #11-02 BEA Building, Singapore 068892. Singapore"
+add list=sosmed address=104.244.40.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=104.244.41.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=104.244.42.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=104.244.43.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=104.244.44.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=104.244.45.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=104.244.46.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=104.244.47.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=185.45.5.0/24	comment="Twitter International Company Ireland"
+add list=sosmed address=185.45.6.0/23	comment="Twitter International Company Ireland"
+add list=sosmed address=188.64.224.0/24	comment="Heron SAS France"
+add list=sosmed address=188.64.225.0/24	comment="Heron SAS France"
+add list=sosmed address=188.64.226.0/23	comment="Heron SAS France"
+add list=sosmed address=188.64.226.0/24	comment="Heron SAS France"
+add list=sosmed address=188.64.227.0/24	comment="Heron SAS France"
+add list=sosmed address=188.64.228.0/24	comment="Heron SAS France"
+add list=sosmed address=188.64.229.0/24	comment="Heron SAS France"
+add list=sosmed address=192.44.69.0/24	comment="Crashlytics, Inc United States"
+add list=sosmed address=192.133.76.0/22	comment="Twitter Inc. United States"
+add list=sosmed address=192.133.76.0/23	comment="Twitter Inc. United States"
+add list=sosmed address=199.16.156.0/22	comment="Twitter Inc. United States"
+add list=sosmed address=199.16.156.0/23	comment="Twitter Inc. United States"
+add list=sosmed address=199.59.148.0/22	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.56.0/23	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.56.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.57.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.58.0/23	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.60.0/23	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.60.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.61.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=199.96.62.0/23	comment="Twitter Inc. United States"
+add list=sosmed address=202.160.128.0/24	comment="Twitter Asia Pacific Pte. Ltd. Singapore"
+add list=sosmed address=202.160.129.0/24	comment="Twitter Asia Pacific Pte. Ltd. Singapore"
+add list=sosmed address=202.160.130.0/24	comment="Twitter Asia Pacific Pte. Ltd. Singapore"
+add list=sosmed address=202.160.131.0/24	comment="Twitter Asia Pacific Pte. Ltd. Singapore"
+add list=sosmed address=209.237.192.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.193.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.194.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.195.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.196.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.197.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.198.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.199.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.200.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.201.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.204.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.205.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.206.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.207.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.208.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.209.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.210.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.211.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.212.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.213.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.214.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.215.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.216.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.217.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.218.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.219.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.220.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.221.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.222.0/24	comment="Twitter Inc. United States"
+add list=sosmed address=209.237.223.0/24	comment="Twitter Inc. United States"
+
+
+/ip firewall address-list
+add address=118.98.0.0/17 list=ggc-telkom
+add address=118.97.0.0/16 list=ggc-telkom
+
+
+/ip firewall address-list
+add address=216.239.32.0/19 list=google
+add address=216.58.192.0/19 list=google
+add address=172.217.0.0/16 list=google
+add address=74.125.0.0/16 list=google
+
+
+/ip firewall mangle
+add action=jump chain=input in-interface=ether1 jump-target=download
+add action=jump chain=forward in-interface=ether1 jump-target=download
+add action=mark-packet chain=download comment=icmp-dns-download new-packet-mark=icmp-dns-download passthrough=no protocol=icmp
+add action=mark-packet chain=download comment=icmp-dns-download new-packet-mark=icmp-dns-download passthrough=no protocol=tcp src-port=53,5353,123
+add action=mark-packet chain=download comment=icmp-dns-download new-packet-mark=icmp-dns-download passthrough=no protocol=udp src-port=53,5353,123
+add action=mark-packet chain=download comment=ggc-download new-packet-mark=ggc-download passthrough=no src-address-list=ggc-telkom
+add action=mark-packet chain=download comment=google-download new-packet-mark=google-download passthrough=no src-address-list=google
+add action=mark-packet chain=download comment=sosmed-download new-packet-mark=sosmed-download passthrough=no src-address-list=sosmed
+add action=mark-packet chain=download comment=browsing-download connection-rate=0-512k new-packet-mark=browsing-download passthrough=no protocol=tcp \
+   src-port=80,443
+add action=mark-packet chain=download comment=browsing-download connection-rate=0-512k new-packet-mark=browsing-download passthrough=no protocol=udp \
+   src-port=80,443
+add action=mark-packet chain=download comment=trafik-download new-packet-mark=trafik-download passthrough=no protocol=tcp src-port=\
+   4500,5000,5500-7100,9000,9091,3000-3200
+add action=mark-packet chain=download comment=trafik-download new-packet-mark=trafik-download passthrough=no protocol=udp src-port=\
+   4500,5000,5500-7100,9000,9091,3000-3200
+add action=mark-packet chain=download comment=trafik-download new-packet-mark=trafik-download passthrough=no protocol=tcp src-port=\
+   0-2000,5050,8777,8000-8999,5353,5938,8291,12671-12675,16800
+add action=mark-packet chain=download comment=trafik-download new-packet-mark=trafik-download passthrough=no protocol=udp src-port=\
+   0-2000,5050,8777,8000-8999,5353,5938,8291,12671-12675,16800
+add action=mark-packet chain=download comment=trafik-download layer7-protocol=torrent1 new-packet-mark=trafik-download passthrough=no
+add action=mark-packet chain=download comment=trafik-download layer7-protocol=torrent2 new-packet-mark=trafik-download passthrough=no
+add action=mark-packet chain=download comment=trafik-download layer7-protocol=torrent3 new-packet-mark=trafik-download passthrough=no
+add action=mark-packet chain=download comment=trafik-download layer7-protocol=torrent4 new-packet-mark=trafik-download passthrough=no
+add action=mark-packet chain=download comment=high-priority-download new-packet-mark=high-priority-download passthrough=no
+add action=return chain=download
+add action=jump chain=forward jump-target=upload out-interface=ether1
+add action=jump chain=output jump-target=upload out-interface=ether1
+add action=mark-packet chain=upload comment=icmp-dns-upload new-packet-mark=icmp-dns-upload passthrough=no protocol=icmp
+add action=mark-packet chain=upload comment=icmp-dns-upload dst-port=53,5353,123 new-packet-mark=icmp-dns-upload passthrough=no protocol=tcp
+add action=mark-packet chain=upload comment=icmp-dns-upload dst-port=53,5353,123 new-packet-mark=icmp-dns-upload passthrough=no protocol=udp
+add action=mark-packet chain=upload comment=ggc-upload dst-address-list=ggc-telkom new-packet-mark=ggc-upload passthrough=no
+add action=mark-packet chain=upload comment=google-upload dst-address-list=google new-packet-mark=google-upload passthrough=no
+add action=mark-packet chain=upload comment=sosmed-upload dst-address-list=sosmed new-packet-mark=sosmed-upload passthrough=no
+add action=mark-packet chain=upload comment=browsing-upload connection-rate=0-500k dst-port=80,443 new-packet-mark=browsing-upload passthrough=no protocol=\
+   tcp
+add action=mark-packet chain=upload comment=browsing-upload connection-rate=0-500k dst-port=80,443 new-packet-mark=browsing-upload passthrough=no protocol=\
+   udp
+add action=mark-packet chain=upload comment=trafik-upload dst-port=4500,5000,5500-7100,9000,9091,3000-3200 new-packet-mark=trafik-upload passthrough=no \
+   protocol=tcp
+add action=mark-packet chain=upload comment=trafik-upload dst-port=4500,5000,5500-7100,9000,9091,3000-3200 new-packet-mark=trafik-upload passthrough=no \
+   protocol=udp
+add action=mark-packet chain=upload comment=trafik-upload dst-port=0-2000,5050,8777,8000-8999,5353,5938,8291,12671-12675,16800 new-packet-mark=trafik-upload \
+   passthrough=no protocol=tcp
+add action=mark-packet chain=upload comment=trafik-upload dst-port=0-2000,5050,8777,8000-8999,5353,5938,8291,12671-12675,16800 new-packet-mark=trafik-upload \
+   passthrough=no protocol=udp
+add action=mark-packet chain=upload comment=trafik-upload layer7-protocol=torrent1 new-packet-mark=trafik-upload passthrough=no
+add action=mark-packet chain=upload comment=trafik-upload layer7-protocol=torrent2 new-packet-mark=trafik-upload passthrough=no
+add action=mark-packet chain=upload comment=trafik-upload layer7-protocol=torrent3 new-packet-mark=trafik-upload passthrough=no
+add action=mark-packet chain=upload comment=trafik-upload layer7-protocol=torrent4 new-packet-mark=trafik-upload passthrough=no
+add action=mark-packet chain=upload comment=high-priority-upload new-packet-mark=high-priority-upload passthrough=no
+add action=return chain=upload
+
+
+/queue tree
+add max-limit=1G name=A.DOWNLOAD parent=global queue=default
+add limit-at=64k max-limit=100M name=A.1.ICMP-DNS packet-mark=icmp-dns-download parent=A.DOWNLOAD priority=1 queue=default
+add limit-at=10M max-limit=100M name=A.2.HIGH-PRIORITY packet-mark=high-priority-download parent=A.DOWNLOAD priority=3 queue=default
+add limit-at=80M max-limit=100M name=A.3.TRAFIK parent=A.DOWNLOAD queue=pcq-download-default
+add limit-at=5M max-limit=100M name=A.3.1.BROWSING packet-mark=browsing-download parent=A.3.TRAFIK priority=5 queue=default
+add limit-at=5M max-limit=100M name=A.3.2.GGC packet-mark=ggc-download parent=A.3.TRAFIK priority=5 queue=default
+add limit-at=5M max-limit=100M name=A.3.3.SOSMED packet-mark=sosmed-download parent=A.3.TRAFIK priority=6 queue=default
+add limit-at=5M max-limit=100M name=A.3.4.GOOGLE packet-mark=google-download parent=A.3.TRAFIK priority=7 queue=default
+add limit-at=5M max-limit=100M name=A.3.5.UNPRIORITY packet-mark=trafik-download parent=A.3.TRAFIK queue=default
+
+
+/queue tree
+add max-limit=1G name=B.UPLOAD parent=global queue=default
+add limit-at=64k max-limit=100M name=B.1.ICMP-DNS packet-mark=icmp-dns-upload parent=B.UPLOAD priority=1 queue=default
+add limit-at=10M max-limit=100M name=B.2.HIGH-PRIORITY packet-mark=high-priority-upload parent=B.UPLOAD priority=3 queue=default
+add limit-at=80M max-limit=100M name=B.3.TRAFIK parent=B.UPLOAD queue=pcq-upload-default
+add limit-at=5M max-limit=100M name=B.3.1.BROWSING packet-mark=browsing-upload parent=B.3.TRAFIK priority=5 queue=default
+add limit-at=5M max-limit=100M name=B.3.2.GGC packet-mark=ggc-upload parent=B.3.TRAFIK priority=5 queue=default
+add limit-at=5M max-limit=100M name=B.3.3.SOSMED packet-mark=sosmed-upload parent=B.3.TRAFIK priority=6 queue=default
+add limit-at=5M max-limit=100M name=B.3.4.GOOGLE packet-mark=google-upload parent=B.3.TRAFIK priority=7 queue=default
+add limit-at=5M max-limit=100M name=B.3.5.UNPRIORITY packet-mark=trafik-upload parent=B.3.TRAFIK queue=default

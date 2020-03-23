@@ -1,0 +1,25 @@
+/ip firewall address-list
+add address=10.0.0.0/8 list=private-lokal
+add address=172.16.0.0/12 list=private-lokal
+add address=192.168.0.0/16 list=private-lokal
+ 
+/ip firewall filter
+add action=drop chain=input comment=dns-flood dst-port=53,5353 protocol=tcp src-address-list=!private-lokal
+add action=drop chain=input comment=dns-flood dst-port=53,5353 protocol=udp src-address-list=!private-lokal
+
+/ip dns
+set allow-remote-requests=no servers=208.67.222.222,208.67.220.220
+
+/ip fi nat
+add action=dst-nat chain=dstnat comment=dns-block src-address-list=private-lokal dst-port=53,5353 nth=4,1 protocol=tcp time=7h1s-22h59m59s,sun,mon,tue,wed,thu,fri,sat to-addresses=103.80.80.248 to-ports=5353
+add action=dst-nat chain=dstnat comment=dns-block src-address-list=private-lokal dst-port=53,5353 nth=2,1 protocol=tcp time=7h1s-22h59m59s,sun,mon,tue,wed,thu,fri,sat to-addresses=103.80.80.249 to-ports=5353
+add action=dst-nat chain=dstnat comment=dns-block src-address-list=private-lokal dst-port=53,5353 nth=3,1 protocol=udp time=7h1s-22h59m59s,sun,mon,tue,wed,thu,fri,sat to-addresses=103.80.80.248 to-ports=5353
+add action=dst-nat chain=dstnat comment=dns-block src-address-list=private-lokal dst-port=53,5353 nth=1,1 protocol=udp time=7h1s-22h59m59s,sun,mon,tue,wed,thu,fri,sat to-addresses=103.80.80.249 to-ports=5353
+# inactive time
+add action=dst-nat chain=dstnat comment=dns-open src-address-list=private-lokal dst-port=53,5353 nth=4,1 protocol=tcp time=23h-7h,sun,mon,tue,wed,thu,fri,sat to-addresses=208.67.222.222 to-ports=5353
+# inactive time
+add action=dst-nat chain=dstnat comment=dns-open src-address-list=private-lokal dst-port=53,5353 nth=3,1 protocol=udp time=23h-7h,sun,mon,tue,wed,thu,fri,sat to-addresses=208.67.222.222 to-ports=5353
+# inactive time
+add action=dst-nat chain=dstnat comment=dns-open src-address-list=private-lokal dst-port=53,5353 nth=2,1 protocol=tcp time=23h-7h,sun,mon,tue,wed,thu,fri,sat to-addresses=208.67.220.220 to-ports=5353
+# inactive time
+add action=dst-nat chain=dstnat comment=dns-open src-address-list=private-lokal dst-port=53,5353 nth=1,1 protocol=udp time=23h-7h,sun,mon,tue,wed,thu,fri,sat to-addresses=208.67.220.220 to-ports=5353
